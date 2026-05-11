@@ -20,6 +20,7 @@ end
 -- updates the game live
 function love.update(dt)
     Snake.update(dt)
+    Food.update(dt)
     Food.checkEat()
 end
 

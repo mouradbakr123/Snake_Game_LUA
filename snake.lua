@@ -6,14 +6,15 @@ Snake.body = {}
 Snake.dir = { x = 1, y = 0 }
 
 Snake.timer = 0
+Snake.speedMult = 1
+Snake.speedTimer = 0
 Snake.speed = 0.15
 
 Snake.grow = 0
----------------------------------------------------------------------------------------------
---- functions
 
+---------------------------------------------------------------------------------------------
 -- reset function
-function Snake.reset() -- just put the player at the start for tetsing
+function Snake.reset()
 
     Snake.body = {
         { x = 5, y = 5 },
@@ -24,17 +25,30 @@ function Snake.reset() -- just put the player at the start for tetsing
     Snake.dir = { x = 1, y = 0 }
     Snake.timer = 0
     Snake.grow = 0
+    Snake.speedTimer = 0
+    Snake.speedMult = 1
 
 end
 
+---------------------------------------------------------------------------------------------
 -- movement
 function Snake.update(dt)
 
     Snake.timer = Snake.timer + dt
+
+    -- speed boost system
+    if Snake.speedTimer > 0 then
+        Snake.speedTimer = math.max(0, Snake.speedTimer - dt)
+        Snake.speedMult = 1.5
+    else
+        Snake.speedMult = 1
+    end
+
     local length = #Snake.body
     local baseSpeed = 0.15
 
-    Snake.speed = math.max(0.05, baseSpeed - (length * 0.005))
+    Snake.speed = math.max(0.05, (baseSpeed - (length * 0.002))) / Snake.speedMult
+
     if Snake.timer < Snake.speed then return end
     Snake.timer = 0
 
@@ -46,7 +60,6 @@ function Snake.update(dt)
         y = head.y + Snake.dir.y
     }
 
-    -- insert new head
     table.insert(Snake.body, 1, newHead)
 
     -- remove tail unless growing
@@ -56,41 +69,63 @@ function Snake.update(dt)
         table.remove(Snake.body)
     end
 
+    -- self collision
     for i = 2, #Snake.body do
+        local part = Snake.body[i]
 
-    local part = Snake.body[i]
-    -- resets if the snake hits its body
-    if newHead.x == part.x and newHead.y == part.y then
-        Snake.reset()
-        return
+        if newHead.x == part.x and newHead.y == part.y then
+            Snake.reset()
+            return
+        end
     end
 
-end
     Snake.checkDeath()
 end
 
--- grow snake
-function Snake.eat()
-    Snake.grow = Snake.grow + 1
+---------------------------------------------------------------------------------------------
+-- eating
+function Snake.eat(score)
+    Snake.grow = Snake.grow + score
 end
 
--- death (walls only for now)
+---------------------------------------------------------------------------------------------
+-- wall collision
 function Snake.checkDeath()
 
     local head = Snake.body[1]
 
-    if head.x < 0 or head.x >= 20 or head.y < 0 or head.y >= 15 then
+    if head.x < 0 or head.x >= Grid.width
+    or head.y < 0 or head.y >= Grid.height then
         Snake.reset()
     end
 
 end
 
--- draw snake
+---------------------------------------------------------------------------------------------
+-- draw
 function Snake.draw()
 
-    love.graphics.setColor(0, 1, 0)
+    local len = #Snake.body
 
     for i, part in ipairs(Snake.body) do
+
+        local t = i / len  -- 0 (head) → 1 (tail)
+
+        local r, g, b
+
+        if Snake.speedTimer > 0 then
+            -- speed mode: cyan gradient
+            r = 0.2 * (1 - t)
+            g = 0.9 * (1 - t)
+            b = 1
+        else
+            -- normal green gradient
+            r = 0.2 * (1 - t)
+            g = 0.8 * (1 - t) + 0.2
+            b = 0.2 * (1 - t)
+        end
+
+        love.graphics.setColor(r, g, b)
 
         love.graphics.rectangle(
             "fill",
@@ -99,11 +134,9 @@ function Snake.draw()
             Grid.cellSize,
             Grid.cellSize
         )
-
     end
 
     love.graphics.setColor(1, 1, 1)
-
 end
 
 return Snake
