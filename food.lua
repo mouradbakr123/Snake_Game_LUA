@@ -5,37 +5,41 @@ local Food = {}
 Food.items = {}
 
 -- images
-local poisonImg = love.graphics.newImage("assets/Skull_SnakeGame.png")
+local Poison_apple_Img = love.graphics.newImage("assets/Skull_apple.png")
+local Normal_apple_Img = love.graphics.newImage("assets/Normal_apple.png")
+local Golden_apple_Img = love.graphics.newImage("assets/Golden_apple.png")
+local Bonus_apple_Img = love.graphics.newImage("assets/Bonus_apple.png")
+local Speed_apple_Img = love.graphics.newImage("assets/Speed_apple.png")
 
 ---------------------------------------------------------------------------------------------------------------------
 -- food types
 local foodTypes = {
     normal = {
-        color = {1, 0, 0}, -- red
+        image = Normal_apple_Img,
         score = 1,
         weight = 70,
     },
 
     bonus = {
-        color = {0, 1, 0}, -- green (bright grass green)
+        image = Bonus_apple_Img,
         score = 3,
         weight = 25,
     },
 
     gold = {
-        color = {1, 0.84, 0}, -- gold (yellow/golden)
+        image = Golden_apple_Img,
         score = 5,
         weight = 5,
     },
 
     speed = {
-        color = {0, 0.9, 1}, -- cyan / electric blue (speed effect color)
+        image = Speed_apple_Img,
         score = 2,
         weight = 15,
     },
 
     poison = {
-        image = poisonImg,
+        image = Poison_apple_Img,
         score = -2,
         weight = 20,
         -- no color (uses skull image instead)

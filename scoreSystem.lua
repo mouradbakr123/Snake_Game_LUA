@@ -5,7 +5,13 @@ local combo = 0
 local score = 0
 local baseScore = 0
 
-------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------
+function ScoreSystem.reset()
+    combo = 0
+    score = 0
+    baseScore = 0
+end
+
 -- Combo logic
 function ScoreSystem.AddCombo(foodEaten)
 
@@ -24,7 +30,6 @@ function ScoreSystem.GetCombo()
     return combo
 end
 
-------------------------------------------------------------------------------------------------------------------------
 -- Score logic
 function ScoreSystem.AddBaseScore(foodType)
 
@@ -40,6 +45,7 @@ function ScoreSystem.AddBaseScore(foodType)
         baseScore = baseScore + 5
     elseif foodType == "poison" then
         baseScore = math.max(0, baseScore - 3)
+        combo = 0
     end
 
     score = baseScore

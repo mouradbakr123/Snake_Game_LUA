@@ -1,5 +1,6 @@
 local Snake = {}
 local Grid = require("grid")
+local ScoreSystem = require("scoreSystem")
 
 Snake.body = {}
 
@@ -27,6 +28,8 @@ function Snake.reset()
     Snake.grow = 0
     Snake.speedTimer = 0
     Snake.speedMult = 1
+
+    ScoreSystem.reset()
 
 end
 

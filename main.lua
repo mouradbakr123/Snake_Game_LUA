@@ -10,14 +10,18 @@ local gameState = "home"
 
 ------------------------------------------------------------------------------------------
 function love.load()
+
     love.graphics.setDefaultFilter("nearest", "nearest")
 
-    ScoreSystem.enabled = false
+    math.randomseed(os.time())
+    math.random(); math.random(); math.random()
 
+    Grid.load()
     Grid.resize()
+    Grid.generateTiles()
+    homeScreen.load()
     Snake.reset()
     Food.spawn()
-    homeScreen.load()
 end
 
 ------------------------------------------------------------------------------------------
