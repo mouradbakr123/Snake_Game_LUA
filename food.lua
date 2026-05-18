@@ -75,7 +75,7 @@ function Food.spawn()
         type = type,
 
         timer = 0,
-        life = 5,
+        life = 7,
 
         blink = false,
         blinkTimer = 0
@@ -91,7 +91,7 @@ function Food.update(dt)
 
         food.timer = food.timer + dt
 
-        -- blinking near expiry
+        -- blinking
         if food.life - food.timer < 1 then
             food.blinkTimer = food.blinkTimer + dt
 
@@ -105,13 +105,18 @@ function Food.update(dt)
 
         -- despawn
         if food.timer >= food.life then
+
             table.remove(Food.items, i)
 
             if #Food.items < 3 then
                 Food.spawn()
             end
+
+            return "despawn"
         end
     end
+
+    return nil
 end
 
 ---------------------------------------------------------------------------------------------------------------------
@@ -121,6 +126,7 @@ function Food.checkEat()
     local head = Snake.body[1]
 
     for i = #Food.items, 1, -1 do
+
         local food = Food.items[i]
         local data = foodTypes[food.type]
 
@@ -146,8 +152,12 @@ function Food.checkEat()
             if #Food.items < 3 then
                 Food.spawn()
             end
+
+            return food.type
         end
     end
+
+    return nil
 end
 
 ---------------------------------------------------------------------------------------------------------------------
